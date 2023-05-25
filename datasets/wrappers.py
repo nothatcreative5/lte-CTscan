@@ -27,17 +27,18 @@ class SRImplicitPaired(Dataset):
     def __getitem__(self, idx):
         img_lr, img_hr = self.dataset[idx]
 
-        s = img_hr.shape[-2] // img_lr.shape[-2] # assume int scale
+        # print(img_hr.shape, img_lr.shape)
+
+        # s = img_hr.shape[-2] // img_lr.shape[-2] # assume int scale
+        s = 2
         if self.inp_size is None:
             h_lr, w_lr = img_lr.shape[-2:]
             img_hr = img_hr[:, :h_lr * s, :w_lr * s]
             crop_lr, crop_hr = img_lr, img_hr
         else:
             w_lr = self.inp_size
-            max_x = img_hr.shape[-2] // s
-            max_y = img_hr.shape[-1] // s
-            x0 = random.randint(0, max_x - w_lr)
-            y0 = random.randint(0, max_y - w_lr)
+            x0 = random.randint(0, img_lr.shape[-2] - w_lr - 1)
+            y0 = random.randint(0, img_lr.shape[-1] - w_lr - 1)
             crop_lr = img_lr[:, x0: x0 + w_lr, y0: y0 + w_lr]
             w_hr = w_lr * s
             x1 = x0 * s
@@ -73,6 +74,9 @@ class SRImplicitPaired(Dataset):
         cell[:, 0] *= 2 / crop_hr.shape[-2]
         cell[:, 1] *= 2 / crop_hr.shape[-1]
 
+        # print(crop_hr.shape, 'kiiiiiir')
+        # print(hr_rgb.shape, crop_lr.shape)
+
         return {
             'inp': crop_lr,
             'coord': hr_coord,
@@ -103,10 +107,8 @@ class SRImplicitPairedFast(Dataset):
             crop_lr, crop_hr = img_lr, img_hr
         else:
             w_lr = self.inp_size
-            max_x = img_hr.shape[-2] // s
-            max_y = img_hr.shape[-1] // s
-            x0 = random.randint(0, max_x - w_lr)
-            y0 = random.randint(0, max_y - w_lr)
+            x0 = random.randint(0, img_lr.shape[-2] - w_lr - 1)
+            y0 = random.randint(0, img_lr.shape[-1] - w_lr - 1)
             crop_lr = img_lr[:, x0: x0 + w_lr, y0: y0 + w_lr]
             w_hr = w_lr * s
             x1 = x0 * s
