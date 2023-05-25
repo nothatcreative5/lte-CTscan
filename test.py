@@ -12,6 +12,8 @@ import datasets
 import models
 import utils
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 def batched_predict(model, inp, coord, cell, bsize):
     with torch.no_grad():
@@ -121,6 +123,8 @@ def eval_psnr(loader, model, data_norm=None, eval_type=None, eval_bsize=None, wi
 
 
 if __name__ == '__main__':
+    print(torch.cuda.is_available())
+    print(torch.cuda.device_count())
     parser = argparse.ArgumentParser()
     parser.add_argument('--config')
     parser.add_argument('--model')

@@ -15,6 +15,9 @@ import models
 import utils
 from test import eval_psnr
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
+
 
 def make_data_loader(spec, tag=''):
     if spec is None:
@@ -41,7 +44,7 @@ def make_data_loaders():
 def prepare_training():
 #     if config.get('resume') is not None:
     if os.path.exists(config.get('resume')):
-        sv_file = torch.load(config['resume'])
+        sv_file = torch.load(config['resume'],map_location='cuda:0')
         model = models.make(sv_file['model'], load_sd=True).cuda()
         optimizer = utils.make_optimizer(
             model.parameters(), sv_file['optimizer'], load_sd=True)
@@ -202,6 +205,8 @@ def main(config_, save_path):
 
 
 if __name__ == '__main__':
+    print(torch.cuda.is_available())
+    print(torch.cuda.device_count())
     parser = argparse.ArgumentParser()
     parser.add_argument('--config')
     parser.add_argument('--name', default=None)
