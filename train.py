@@ -81,7 +81,9 @@ def train(train_loader, model, optimizer, \
     gt_sub = torch.FloatTensor(t['sub']).view(1, 1, -1).cuda()
     gt_div = torch.FloatTensor(t['div']).view(1, 1, -1).cuda()
     
-    num_dataset = 800 # DIV2K
+    # wtf?
+   # num_dataset = 800 # DIV2K
+    num_dataset = len(train_loader.dataset)
     iter_per_epoch = int(num_dataset / config.get('train_dataset')['batch_size'] \
                         * config.get('train_dataset')['dataset']['args']['repeat'])
     iteration = 0
