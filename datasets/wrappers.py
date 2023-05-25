@@ -34,8 +34,8 @@ class SRImplicitPaired(Dataset):
             crop_lr, crop_hr = img_lr, img_hr
         else:
             w_lr = self.inp_size
-            max_x = img_hr.shape[-2] // img_lr.shape[-2]
-            max_y = img_hr.shape[-1] // img_lr.shape[-1]
+            max_x = img_hr.shape[-2] // s
+            max_y = img_hr.shape[-1] // s
             x0 = random.randint(0, max_x - w_lr)
             y0 = random.randint(0, max_y - w_lr)
             crop_lr = img_lr[:, x0: x0 + w_lr, y0: y0 + w_lr]
@@ -103,8 +103,8 @@ class SRImplicitPairedFast(Dataset):
             crop_lr, crop_hr = img_lr, img_hr
         else:
             w_lr = self.inp_size
-            max_x = img_hr.shape[-2] // img_lr.shape[-2]
-            max_y = img_hr.shape[-1] // img_lr.shape[-1]
+            max_x = img_hr.shape[-2] // s
+            max_y = img_hr.shape[-1] // s
             x0 = random.randint(0, max_x - w_lr)
             y0 = random.randint(0, max_y - w_lr)
             crop_lr = img_lr[:, x0: x0 + w_lr, y0: y0 + w_lr]
