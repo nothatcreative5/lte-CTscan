@@ -27,8 +27,6 @@ class SRImplicitPaired(Dataset):
     def __getitem__(self, idx):
         img_lr, img_hr = self.dataset[idx]
 
-        # print(img_hr.shape, img_lr.shape)
-
         # s = img_hr.shape[-2] // img_lr.shape[-2] # assume int scale
         s = 2
         if self.inp_size is None:
@@ -74,14 +72,12 @@ class SRImplicitPaired(Dataset):
         cell[:, 0] *= 2 / crop_hr.shape[-2]
         cell[:, 1] *= 2 / crop_hr.shape[-1]
 
-        # print(crop_hr.shape, 'kiiiiiir')
-        # print(hr_rgb.shape, crop_lr.shape)
-
         return {
             'inp': crop_lr,
             'coord': hr_coord,
             'cell': cell,
-            'gt': hr_rgb
+            'gt': hr_rgb,
+            'ssim': img_hr.shape
         }
 
 @register('sr-implicit-paired-fast')

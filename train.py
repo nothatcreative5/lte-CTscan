@@ -28,7 +28,8 @@ def make_data_loader(spec, tag=''):
 
     log('{} dataset: size={}'.format(tag, len(dataset)))
     for k, v in dataset[0].items():
-        log('  {}: shape={}'.format(k, tuple(v.shape)))
+        if k != 'ssim':
+            log('  {}: shape={}'.format(k, tuple(v.shape)))
 
     loader = DataLoader(dataset, batch_size=spec['batch_size'],
         shuffle=(tag == 'train'), num_workers=8, pin_memory=True)
@@ -92,7 +93,8 @@ def train(train_loader, model, optimizer, \
     iteration = 0
     for batch in tqdm(train_loader, leave=False, desc='train'):
         for k, v in batch.items():
-            batch[k] = v.cuda()
+            if k != 'ssim':
+                batch[k] = v.cuda()
 
         inp = (batch['inp'] - inp_sub) / inp_div
         pred = model(inp, batch['coord'], batch['cell'])
@@ -212,9 +214,11 @@ if __name__ == '__main__':
     parser.add_argument('--name', default=None)
     parser.add_argument('--tag', default=None)
     parser.add_argument('--gpu', default='0')
+    parser.add_argument('--scale', default = 2)
     args = parser.parse_args()
 
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
+    os.environ['Model_SCALE'] = args.scale
 
     with open(args.config, 'r') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
