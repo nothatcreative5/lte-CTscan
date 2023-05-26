@@ -5,6 +5,7 @@ from PIL import Image
 
 import numpy as np
 import torch
+import os 
 from torch.utils.data import Dataset
 from torchvision import transforms
 
@@ -27,8 +28,10 @@ class SRImplicitPaired(Dataset):
     def __getitem__(self, idx):
         img_lr, img_hr = self.dataset[idx]
 
+        # That do be cap though
         # s = img_hr.shape[-2] // img_lr.shape[-2] # assume int scale
-        s = 2
+        
+        s = int(os.environ["Model_SCALE"])
         if self.inp_size is None:
             h_lr, w_lr = img_lr.shape[-2:]
             img_hr = img_hr[:, :h_lr * s, :w_lr * s]

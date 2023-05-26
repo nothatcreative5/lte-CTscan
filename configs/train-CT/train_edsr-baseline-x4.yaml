@@ -9,7 +9,7 @@ train_dataset:
   wrapper:
     name: sr-implicit-paired
     args:
-      inp_size: 16
+      inp_size: 8
       augment: true
   batch_size: 16
 
@@ -25,7 +25,7 @@ val_dataset:
   wrapper:
     name: sr-implicit-paired
     args:
-      inp_size: 16
+      inp_size: 8
   batch_size: 16
 
 data_norm:
@@ -52,4 +52,4 @@ multi_step_lr:
 epoch_val: 1
 epoch_save: 100
 
-resume: ./save/_train_edsr-baseline-x2/epoch-last.pth
+resume: ./save/_train_edsr-baseline-x4/epoch-last.pth
