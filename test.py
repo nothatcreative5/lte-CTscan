@@ -66,13 +66,12 @@ def eval_psnr(
         raise NotImplementedError
 
     val_res = utils.Averager()
-    ssim_res = utils.Averager()
+    if verbose:
+      ssim_res = utils.Averager()
 
     pbar = tqdm(loader, leave=False, desc="val")
     for batch in pbar:
         for k, v in batch.items():
-            if k == "ssim":
-                print(v)
             if k != "ssim":
                 batch[k] = v.cuda()
 
@@ -129,21 +128,27 @@ def eval_psnr(
             pred = pred.view(*shape).permute(0, 3, 1, 2).contiguous()
             pred = pred[..., : batch["gt"].shape[-2], : batch["gt"].shape[-1]]
 
-        original_shape = tuple(tensor.item() for tensor in batch["ssim"])
-
         res = metric_fn(pred, batch["gt"])
-        ssim = utils.calculate_ssim(
+        if verbose:
+          original_shape = tuple(tensor.item() for tensor in batch["ssim"])
+          ssim = utils.calculate_ssim(
             pred, batch["gt"], 0, original_shape=original_shape, input_order="CHW"
         )
-        ssim_res.add(ssim, inp.shape[0])
+          ssim_res.add(ssim, inp.shape[0])
         val_res.add(res.item(), inp.shape[0])
 
         if verbose:
             pbar.set_description(
                 "val PSNR {:.4f} SSIM {:.4f}".format(val_res.item(), ssim_res.item())
             )
-
-    return val_res.item(), ssim_res.item()
+        else:
+            pbar.set_description(
+                "val PSNR {:.4f}".format(val_res.item())
+            )
+    if verbose:
+      return val_res.item(), ssim_res.item()
+    else:
+      return val_res.item()
 
 
 if __name__ == "__main__":
